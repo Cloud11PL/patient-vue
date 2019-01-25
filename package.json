@@ -1,0 +1,19 @@
+{
+  "name": "patient-vue",
+  "version": "1.0.0",
+  "description": "patient-vue",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cloud11PL/patient-vue.git"
+  },
+  "author": "Wojciech",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cloud11PL/patient-vue/issues"
+  },
+  "homepage": "https://github.com/Cloud11PL/patient-vue#readme"
+}
