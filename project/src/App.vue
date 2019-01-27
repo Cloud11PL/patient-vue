@@ -1,9 +1,6 @@
 <template>
   <div id="app">
     <div id="nav">
-      <!--
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>-->
       <v-toolbar dark color="primary">
       <v-toolbar-title class="white--text">Patient Database</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -49,7 +46,7 @@ export default {
   color: #2c3e50;
 }
 #nav {
-  padding: 30px;
+  padding: 0px;
   a {
     font-weight: bold;
     color: #2c3e50;

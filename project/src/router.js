@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/HomePage.vue'
+import HomePage from './views/HomePage.vue'
 import RegisterPage from './views/RegisterPage.vue'
 import LoginPage from './views/LoginPage.vue'
 import store from './store'
@@ -13,7 +13,7 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: HomePage
     },
     {
       path: '/login',

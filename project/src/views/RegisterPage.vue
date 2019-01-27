@@ -14,17 +14,26 @@
       >
         Register has NOT been succesfull.
       </v-alert>
+      <br>
       <h1>Register Page</h1>
-        <form @submit.prevent="submit">
-          <v-layout align-center justify-center column>
-            <!--<v-text-field v-model="username"></v-text-field>-->
-            <v-flex xs4 sm4 md4 ><v-text-field label="Name" v-model="name"></v-text-field></v-flex>
-            <v-flex xs4 sm4 md4 ><v-text-field label="Username" v-model="username"></v-text-field></v-flex>
-            <v-flex xs4 sm4 md4 ><v-text-field label="Email" v-model="email"></v-text-field></v-flex>
-            <v-flex xs4 sm4 md4 ><v-text-field label="Password" v-model="password" type="password"></v-text-field></v-flex>
-            <v-btn type="submit">Log in</v-btn>
-          </v-layout>
-        </form>
+      <br>
+      <v-layout>
+        <v-flex xs10 sm6 offset-sm3 offset-xs1>
+          <v-card>
+            <br>
+              <form @submit.prevent="submit">
+                  <!--<v-text-field v-model="username"></v-text-field>-->
+                  <v-flex xs6 sm4 md4 offset-md4 offset-xs3 ><v-text-field label="Name" v-model="name"></v-text-field></v-flex>
+                  <v-flex xs6 sm4 md4 offset-md4 offset-xs3 ><v-text-field label="Username" v-model="username"></v-text-field></v-flex>
+                  <v-flex xs6 sm4 md4 offset-md4 offset-xs3 ><v-text-field label="Email" v-model="email"></v-text-field></v-flex>
+                  <v-flex xs6 sm4 md4 offset-md4 offset-xs3 ><v-text-field label="Password" v-model="password" type="password"></v-text-field></v-flex>
+                  <v-btn type="submit">Sign Up</v-btn>
+                  <br>
+              </form>
+              <br>
+          </v-card>
+        </v-flex>
+      </v-layout>
     </div>
 </template>
 

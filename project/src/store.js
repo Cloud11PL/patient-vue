@@ -84,6 +84,15 @@ export default new Vuex.Store({
     signupFail({ commit, dispatch }, response) {
       commit('setSignupStatus', 'fails')
       router.push('/register')
+    },
+    addPatient({ commit, dispatch }, patient) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${this.state.accessToken}`
+      axios.post('/api/auth/patient', patient).then(response => {
+        console.log(response)
+        dispatch('getAllPatients')
+      }).catch(err => {
+        console.log(err)
+      })
     }
     /*
     get response,
