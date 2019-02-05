@@ -1,8 +1,12 @@
 <template>
   <div id="CreatePatient">
     <form @submit.prevent="submit">
-      <v-flex flex xs6 sm8 offset-xs3 offset-sm2 ><v-text-field label="First Name" v-model="firstname" v-validate="{ required: true, alpha: true}"></v-text-field></v-flex>
-      <v-flex flex xs6 sm8 offset-xs3 offset-sm2 ><v-text-field label="Surname" v-model="surname"></v-text-field></v-flex>
+      <v-flex flex xs6 sm8 offset-xs3 offset-sm2 >
+        <v-text-field label="First Name" v-model="firstname" v-validate="'required'" ></v-text-field></v-flex>
+        <div v-if="submitted && errors.has('firstname')" class="invalid-feedback">{{ errors.first('firstname') }}</div>
+      <v-flex flex xs6 sm8 offset-xs3 offset-sm2 >
+        <v-text-field label="Surname" v-model="surname"></v-text-field>
+      </v-flex>
       <v-flex flex xs6 sm8 offset-xs3 offset-sm2>
         <v-select
           :items="sex"
@@ -10,7 +14,9 @@
           v-model="sexChosen"
         ></v-select>
       </v-flex>
-      <v-flex flex xs6 sm8 offset-xs3 offset-sm2><v-text-field label="PESEL ID" v-model="pesel"></v-text-field></v-flex>
+      <v-flex flex xs6 sm8 offset-xs3 offset-sm2>
+        <v-text-field label="PESEL ID" v-model="pesel"></v-text-field>
+      </v-flex>
         <v-flex flex xs6 sm8 offset-xs3 offset-sm2>
         <v-dialog
           ref="dialog"
@@ -35,7 +41,7 @@
         </v-date-picker>
         </v-dialog>
       </v-flex>
-      <v-btn v-on:click="submitForm" color="success">add</v-btn>
+      <v-btn v-on:click="submitForm" color="success" class="btn btn-primary">add</v-btn>
     </form>
       <br>
   </div>
@@ -69,20 +75,28 @@ export default {
       pesel: '',
       modal: false,
       date: new Date().toISOString().substr(0, 10),
-      expand: false
+      expand: false,
+      submitted: false
     }
   },
   methods: {
     ...mapActions(['addPatient']),
     submitForm() {
-      const patient = JSON.stringify({
-        'firstname': this.firstname,
-        'surname': this.surname,
-        'dateOfBirth': this.date,
-        'sex': this.sexChosen,
-        'PESEL': this.pesel
-      })
-      this.addPatient(patient)
+      if(this.firstname == null || this.surname == null || this.sexChosen == null || this.pesel == null){
+        console.log('Not enough input data.')
+      } else {
+        const patient = JSON.stringify({
+          'firstname': this.firstname,
+          'surname': this.surname,
+          'dateOfBirth': this.date,
+          'sex': this.sexChosen,
+          'PESEL': this.pesel
+        })
+        this.addPatient(patient)
+        this.firstname = '',
+        this.surname = '',
+        this.pesel = ''
+      }
     }
   }
   

@@ -17,6 +17,12 @@ export default new Vuex.Store({
     setAccessToken(state, accessToken) {
       Vue.set(state, 'accessToken', accessToken)
       Vue.set(state, 'auth', true)
+      localStorage.setItem('user-token', accessToken) // store the token in localstorage
+      router.push('/')
+    },
+    setLocalToken(state, token) {
+      Vue.set(state, 'accessToken', token)
+      Vue.set(state, 'auth', true)
       router.push('/')
     },
     setLoginError(state, error) {
@@ -31,6 +37,7 @@ export default new Vuex.Store({
     removeAccessToken(state) {
       Vue.set(state, 'accessToken', null)
       Vue.set(state, 'auth', false)
+      localStorage.removeItem('user-token')
       Vue.set(state, 'patients', {})
       router.push('/login')
     }
@@ -39,7 +46,6 @@ export default new Vuex.Store({
     login({ commit, dispatch }, data) {
       return axios.post('/api/auth/signin', data).then(response => {
         dispatch('loginSuccessful', response)
-        console.log(`xD`)
       }).catch(response => {
         dispatch('loginFailed')
       })
@@ -52,7 +58,19 @@ export default new Vuex.Store({
         dispatch('signupFail', err)
       })
     },
+    useLocalStoragetoken({ commit, dispatch }, data) {
+      const token = localStorage.getItem('user-token')
+      console.log(token)
+      if (token) {
+        commit('setLocalToken', token)
+      } else {
+        dispatch('loginFailed')
+      }
+    },
     getAllPatients({ commit, dispatch }, data) {
+      if (!this.state.accessToken) {
+        dispatch('useLocalStoragetoken')
+      }
       axios.defaults.headers.common['Authorization'] = `Bearer ${this.state.accessToken}`
       axios.get('/api/getAll').then(res => {
         console.log(res.data.patients)
