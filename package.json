@@ -1,19 +1,39 @@
 {
-  "name": "patient-vue",
-  "version": "1.0.0",
-  "description": "patient-vue",
-  "main": "index.js",
+  "name": "project",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Cloud11PL/patient-vue.git"
+  "dependencies": {
+    "axios": "^0.18.0",
+    "moment": "^2.24.0",
+    "register-service-worker": "^1.5.2",
+    "vee-validate": "^2.1.6",
+    "vue": "^2.5.21",
+    "vue-router": "^3.0.1",
+    "vuetify": "^1.4.3",
+    "vuex": "^3.0.1"
   },
-  "author": "Wojciech",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Cloud11PL/patient-vue/issues"
-  },
-  "homepage": "https://github.com/Cloud11PL/patient-vue#readme"
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.3.0",
+    "@vue/cli-plugin-eslint": "^3.3.0",
+    "@vue/cli-plugin-pwa": "^3.3.0",
+    "@vue/cli-service": "^3.3.0",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "babel-eslint": "^10.0.1",
+    "clean-webpack-plugin": "^1.0.1",
+    "eslint": "^5.8.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.0.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.1",
+    "sw-precache-webpack-plugin": "^0.11.5",
+    "vue-cli-plugin-vuetify": "^0.4.6",
+    "vue-template-compiler": "^2.5.21",
+    "vuetify-loader": "^1.0.5"
+  }
 }
