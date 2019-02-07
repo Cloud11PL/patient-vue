@@ -1,19 +1,80 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <v-toolbar dark color="primary">
-      <v-toolbar-title class="white--text">Patient Database</v-toolbar-title>
-      <v-spacer></v-spacer>
+ <v-app id="inspire">
+      <v-navigation-drawer
+        v-model="drawer"
+        :mini-variant="mini"
+        :clipped="clipped"
+        enable-resize-watcher
+        dark
+        temporary
+        absolute
+      >
+        <v-list class="pa-1">
+          <v-list-tile v-show="!mini">
+            <v-list-tile-action>
+              <v-btn icon @click.stop="drawer = !drawer">
+                <v-icon>chevron_left</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list>
   
-      <v-toolbar-items>
-        <v-btn flat to="/" class="white--text">Home</v-btn>
-        <v-btn flat to="/login" v-show="hide()" class="white--text">Log In</v-btn>
-        <v-btn flat v-on:click="logoutClick" v-show="!hide()" class="white--text">Log Out</v-btn>
-        <v-btn flat to="/register" v-show="hide()" class="white--text">Sign Up</v-btn>
-      </v-toolbar-items>
-    </v-toolbar>
-    </div>
-    <router-view/>
+        <v-list class="pt-0" dense>
+          <v-divider light></v-divider>
+  
+          <v-list-tile to="/">
+            <v-list-tile-action>
+              <v-icon>dashboard</v-icon>
+            </v-list-tile-action>
+  
+            <v-list-tile-content>
+              <v-list-tile-title>Home</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+  
+          <v-list-tile to="/login" v-show="hide()">
+            <v-list-tile-action>
+              <v-icon>vpn_key</v-icon>
+            </v-list-tile-action>
+  
+            <v-list-tile-content>
+              <v-list-tile-title>Log In</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+          <v-list-tile to="/register" v-show="hide()">
+            <v-list-tile-action>
+              <v-icon>person_add</v-icon>
+            </v-list-tile-action>
+  
+            <v-list-tile-content>
+              <v-list-tile-title>Sign Up</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+          <v-list-tile v-on:click="logoutClick" v-show="!hide()">
+            <v-list-tile-action>
+              <v-icon>clear</v-icon>
+            </v-list-tile-action>
+  
+            <v-list-tile-content>
+              <v-list-tile-title>Log Out</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-navigation-drawer>
+      <v-toolbar fixed app dark :clipped-left="clipped">
+        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+        <v-toolbar-title>Patient Database</v-toolbar-title>
+        <v-spacer></v-spacer>
+      </v-toolbar> 
+      <v-content>
+        <v-container fluid>
+          <router-view></router-view>
+        </v-container>
+      </v-content>
+  </v-app>
   </div>
 </template>
 
@@ -21,6 +82,19 @@
 import { mapActions } from 'vuex'
 
 export default {
+  data () {
+    return {
+      drawer: false,
+      clipped: true,
+      items: [
+        { title: 'Home', icon: 'dashboard', action: 'to="/"' },
+        { title: 'Log In', icon: 'vpn_key', action: 'to="/login"' },
+        { title: 'Sign Up', icon: 'person_add', action: 'to="/register"'}
+      ],
+      mini: false,
+      right: null
+    }
+  },
   methods: {
     ...mapActions(['logout']),
     logoutClick() {
