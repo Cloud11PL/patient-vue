@@ -4,7 +4,10 @@ import axios from '@/backend/axios'
 import router from './router'
 
 Vue.use(Vuex)
-
+/**
+ * Vuex is used to store data such as accessToken or patients. This data can be used in all Vue components and views. 
+ * Implemented methods allow for eg. API calls.
+ */
 export default new Vuex.Store({
   state: {
     accessToken: null,

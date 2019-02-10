@@ -48,22 +48,12 @@
 </template>
 
 <script>
-/*
-		firstname: req.body.firstname,
-		surname: req.body.surname,
-		dateOfBirth: req.body.dateOfBirth,
-		sex: req.body.sex,
-        PESEL: req.body.PESEL
 
-        xs4 sm4 md4 
-*/
 import { mapActions } from 'vuex'
-/*
-Pass button event to the parent View
-Hide/show component on created/cancelled
-sex - list
-dat of birth - picker
-*/
+
+/**
+ * `CreatePatient` component allows user to add a patient to the database. It uses Vuetify's `v-date-picker` to pick the birthdate. 
+ */
 export default {
   name: 'createPatient',
   data() {

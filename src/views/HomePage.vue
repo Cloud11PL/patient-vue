@@ -45,6 +45,11 @@
 import { mapActions } from 'vuex'
 import createPatient from '../components/CreatePatient'
 
+/**
+ * Methods here allow the user to see patients that exist in the database using Vuetify's componenet called `v-data-table`. 
+ * User can add a patient using an 'embeded' component called `createPatient`.
+ */
+
 export default {
   name: 'HomePage',
   components:{

@@ -81,6 +81,9 @@
 <script>
 import { mapActions } from 'vuex'
 
+/**
+ * App.vue is the main component in this app. Methods here are used to display the menu and the top bar. 
+ */
 export default {
   data () {
     return {

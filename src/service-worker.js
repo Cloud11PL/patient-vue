@@ -1,3 +1,7 @@
+/**
+ * Setting up service worker that allows the app to 'work' offline. It is downloaded onto user's device.
+ */
+
 workbox.setConfig({
   debug: false,
 });
@@ -16,7 +20,7 @@ workbox.routing.registerRoute(
     ],
   }),
 );
-
+/*
 workbox.routing.registerRoute(
   new RegExp('https://newsapi.org/v2/top-headlines(.*)'),
   workbox.strategies.networkFirst({
@@ -35,3 +39,4 @@ workbox.routing.registerRoute(
     ],
   }),
 );
+*/

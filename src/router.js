@@ -8,6 +8,9 @@ import store from './store'
 Vue.use(Router)
 Vue.use(store)
 
+/**
+ * Router is used to 'push' specific views. 
+ */
 const router = new Router({
   routes: [
     {
@@ -34,6 +37,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   // redirect to login page if not logged in and trying to access a restricted page
+  // Before each attempt to change current view, Router checks if accessToken exists and if the user is logged in.
   const publicPages = ['/login', '/register']
   const authRequired = !publicPages.includes(to.path)
   const token = localStorage.getItem('user-token')

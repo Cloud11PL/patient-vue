@@ -23,7 +23,6 @@
                 <v-card>
                     <br>
                     <form @submit.prevent="submit">
-                        <!--<v-text-field v-model="username"></v-text-field>-->
                         <v-flex xs6 sm4 md4 offset-md4 offset-xs3 ><v-text-field label="Username" v-model="username"></v-text-field></v-flex>
                         <v-flex xs6 sm4 md4 offset-md4 offset-xs3 ><v-text-field label="Password" v-model="password" type="password"></v-text-field></v-flex>
                         <v-btn type="submit">Log in</v-btn>
@@ -40,6 +39,9 @@
 import { mapActions } from 'vuex'
 import { mapGetters } from 'vuex'
 
+/**
+ * Methods here execute methods in the Store that allow the user to log in. If login is succesful the user is redirected to the home page. 
+ */
 export default {
     name: `login`,
     data() {
@@ -55,7 +57,6 @@ export default {
         ...mapActions(['login']),
         submit() {
             this.login(JSON.stringify({'username': this.username, 'password': this.password}))
-            //.then(res => this.$router.push('/'))
         },
         pushRegister() {
             this.$router.push('/register')
