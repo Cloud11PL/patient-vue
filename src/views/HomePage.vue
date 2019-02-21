@@ -13,7 +13,7 @@
             >
               <template slot="items" slot-scope="props">
                 <tr @click="props.expanded = !props.expanded">
-                  <td class="text-xs-left">{{ props.item.id }}</td>
+                  <td class="text-xs-left">{{ props.index+1 }}</td>
                   <td class="text-xs-left">{{ props.item.surname }}</td>
                   <td class="text-xs-left">{{ props.item.firstname }}</td>
                   <td class="text-xs-left">{{ props.item.dateOfBirth }}</td>
@@ -23,7 +23,7 @@
               </template>
               <template slot="expand" slot-scope="props">
                 <v-card flat>
-                  <v-card-text>Peek-a-boo!</v-card-text>
+                  <v-btn depressed large color="error" v-on:click="printCurrent(props.index,props.item.id)">Delete this patient.</v-btn>
                 </v-card>
               </template>
             </v-data-table>
@@ -62,6 +62,7 @@ export default {
       expand: false,
       showTable: false,
       showAddPatient: false,
+      firstId: 0,
       headers: [
         {
           text: 'ID',
@@ -81,6 +82,9 @@ export default {
     ...mapActions(['getAllPatients']),
     getPatients() {
         this.getAllPatients()
+    },
+    printCurrent(id,second){
+      console.log(`W tabeli: ${id}, w SQL: ${second}`)
     }
   },
   created: 
@@ -88,8 +92,6 @@ export default {
         this.getPatients()
         this.$store.subscribe((mutation) => {
         if (mutation.type === 'setPatients') {
-            console.log('liek, fav, sub')
-            console.log(this.$store.getters.getPatients) 
             const patients = this.$store.getters.getPatients
             this.$data.patientArray = patients
             this.$data.showTable = true

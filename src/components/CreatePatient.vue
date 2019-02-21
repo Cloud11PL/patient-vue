@@ -33,7 +33,7 @@
           lazy
           full-width
           width="290px"
-          v-validate="'required|date_format'" 
+          v-validate="'required'" 
           name="date" 
           type="text"
         >
@@ -44,7 +44,6 @@
           prepend-icon="event"
           readonly
         ></v-text-field>
-        <span>{{ errors.first('date') }}</span>
         <v-date-picker v-model="date" scrollable>
           <v-spacer></v-spacer>
           <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
@@ -84,6 +83,7 @@ export default {
     ...mapActions(['addPatient']),
     submitForm() {
       this.$validator.validateAll().then(() => {
+        console.log(this.errors.any())
         if(!this.errors.any()){
           const patient = JSON.stringify({
             'firstname': this.firstname,
@@ -92,7 +92,8 @@ export default {
             'sex': this.sexChosen,
             'PESEL': this.pesel
           })
-          this.addPatient(patient)
+          console.log(patient)
+          this.addPatient(patient).then((res)=>console.log(`hehe ${res}`))
           alert('Submitted!')
           this.firstname = '',
           this.surname = '',
