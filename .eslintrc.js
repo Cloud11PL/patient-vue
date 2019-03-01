@@ -3,14 +3,15 @@ module.exports = {
   env: {
     node: true
   },
-  'extends': [
+  extends: [
     'plugin:vue/essential',
+    'plugin:prettier/recommended',
     '@vue/standard'
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    "javascript.validate.enable": false,
+    'javascript.validate.enable': false,
     'space-before-function-paren': 0
   },
   parserOptions: {

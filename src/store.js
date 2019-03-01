@@ -4,10 +4,7 @@ import axios from '@/backend/axios'
 import router from './router'
 
 Vue.use(Vuex)
-/**
- * Vuex is used to store data such as accessToken or patients. This data can be used in all Vue components and views. 
- * Implemented methods allow for eg. API calls.
- */
+
 export default new Vuex.Store({
   state: {
     accessToken: null,
@@ -16,11 +13,19 @@ export default new Vuex.Store({
     signupStatus: '',
     patients: {}
   },
+  getters: {
+    auth: state => {
+      return state.auth
+    },
+    getPatients: state => {
+      return state.patients
+    }
+  },
   mutations: {
     setAccessToken(state, accessToken) {
       Vue.set(state, 'accessToken', accessToken)
       Vue.set(state, 'auth', true)
-      localStorage.setItem('user-token', accessToken) // store the token in localstorage
+      localStorage.setItem('user-token', accessToken)
       router.push('/')
     },
     setLocalToken(state, token) {
@@ -43,27 +48,39 @@ export default new Vuex.Store({
       localStorage.removeItem('user-token')
       Vue.set(state, 'patients', {})
       router.push('/login')
+    },
+    authFail(state, err) {
+      Vue.set(state, 'accessToken', null)
+      localStorage.removeItem('user-token')
+      Vue.set(state, 'auth', false)
+      err.response.status === 401 ? router.push('/login') : router.push('/')
     }
   },
   actions: {
     login({ commit, dispatch }, data) {
-      return axios.post('/api/auth/signin', data).then(response => {
-        dispatch('loginSuccessful', response)
-      }).catch(response => {
-        dispatch('loginFailed')
-      })
+      commit('removeAccessToken')
+      axios
+        .post('/api/auth/signin', data)
+        .then(response => {
+          dispatch('loginSuccessful', response)
+        })
+        .catch(response => {
+          dispatch('loginFailed')
+        })
     },
     signup({ commit, dispatch }, data) {
-      axios.post('/api/auth/signup', data).then(res => {
-        commit('setSignupStatus', 'success')
-        router.push('/login')
-      }).catch(err => {
-        dispatch('signupFail', err)
-      })
+      axios
+        .post('/api/auth/signup', data)
+        .then(res => {
+          commit('setSignupStatus', 'success')
+          router.push('/login')
+        })
+        .catch(err => {
+          dispatch('signupFail', err)
+        })
     },
     useLocalStoragetoken({ commit, dispatch }, data) {
       const token = localStorage.getItem('user-token')
-      console.log(token)
       if (token) {
         commit('setLocalToken', token)
       } else {
@@ -74,19 +91,23 @@ export default new Vuex.Store({
       if (!this.state.accessToken) {
         dispatch('useLocalStoragetoken')
       }
-      axios.defaults.headers.common['Authorization'] = `Bearer ${this.state.accessToken}`
-      axios.get('/api/getAll').then(res => {
-        console.log(res.data.patients)
-        commit('setPatients', res)
-        return res.data.patients
-      }).catch(err => {
-        console.log(err)
-      })
+      axios.defaults.headers.common['Authorization'] = `Bearer ${
+        this.state.accessToken
+      }`
+      axios
+        .get('/api/getAll')
+        .then(res => {
+          commit('setPatients', res)
+        })
+        .catch(err => {
+          commit('authFail', err)
+        })
     },
     logout({ commit, dispatch }) {
       commit('removeAccessToken', null)
     },
     loginSuccessful({ commit, dispatch }, response) {
+      console.log(response.data.accessToken)
       if (response.data.accessToken) {
         commit('setLoginError', null)
         commit('setAccessToken', response.data.accessToken)
@@ -95,39 +116,25 @@ export default new Vuex.Store({
       }
     },
     loginFailed({ commit }) {
-      commit('setAccessToken', null)
       commit('setLoginError', 'Login Failed! :c')
       router.push('/login')
-    },
-    signupSuccessful({ commit, dispatch }, response) {
-
     },
     signupFail({ commit, dispatch }, response) {
       commit('setSignupStatus', 'fails')
       router.push('/register')
     },
     async addPatient({ commit, dispatch }, patient) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${this.state.accessToken}`
-      await axios.post('/api/auth/patient', patient).then(response => {
-        console.log(response)
-        dispatch('getAllPatients')
-      }).catch(err => {
-        console.log(err)
-      })
-    }
-    /*
-    get response,
-    if true show completion alert, push to login,
-    if error show error alert
-    Jak to zrobić?
-    */
-  },
-  getters: {
-    auth: (state) => {
-      return state.auth
-    },
-    getPatients: (state) => {
-      return state.patients
+      axios.defaults.headers.common['Authorization'] = `Bearer ${
+        this.state.accessToken
+      }`
+      await axios
+        .post('/api/auth/patient', patient)
+        .then(() => {
+          dispatch('getAllPatients')
+        })
+        .catch(err => {
+          commit('authFail', err)
+        })
     }
   }
 })

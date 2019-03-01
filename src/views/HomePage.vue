@@ -3,56 +3,59 @@
     <v-card>
       <v-layout row>
         <v-flex xs12 sm6 offset-sm3>
-            <br>
-            <v-data-table
-              :headers="headers"
-              :items="patientArray"
-              :expand="expand"
-              item-key="surname"
-              v-show="showTable"
-            >
-              <template slot="items" slot-scope="props">
-                <tr @click="props.expanded = !props.expanded">
-                  <td class="text-xs-left">{{ props.index+1 }}</td>
-                  <td class="text-xs-left">{{ props.item.surname }}</td>
-                  <td class="text-xs-left">{{ props.item.firstname }}</td>
-                  <td class="text-xs-left">{{ props.item.dateOfBirth }}</td>
-                  <td class="text-xs-left">{{ props.item.PESEL }}</td>
-                  <td class="text-xs-left">{{ props.item.sex }}</td>
-                </tr>
-              </template>
-              <template slot="expand" slot-scope="props">
-                <v-card flat>
-                  <v-btn depressed large color="error" v-on:click="printCurrent(props.index,props.item.id)">Delete this patient.</v-btn>
-                </v-card>
-              </template>
-            </v-data-table>
-      <v-btn fab dark color="indigo">
-        <v-icon dark v-on:click="showAddPatient = !showAddPatient">add</v-icon>
-      </v-btn>
-      <v-expand-transition>
-        <div v-if="showAddPatient">
-          <create-patient></create-patient>
-        </div>
-      </v-expand-transition>
-      </v-flex>
-    </v-layout>
+          <br />
+          <v-data-table
+            :headers="headers"
+            :items="patientArray"
+            :expand="expand"
+            item-key="surname"
+            v-show="showTable"
+          >
+            <template slot="items" slot-scope="props">
+              <tr @click="props.expanded = !props.expanded">
+                <td class="text-xs-left">{{ increaseIndex(props.index) }}</td>
+                <td class="text-xs-left">{{ props.item.surname }}</td>
+                <td class="text-xs-left">{{ props.item.firstname }}</td>
+                <td class="text-xs-left">{{ props.item.dateOfBirth }}</td>
+                <td class="text-xs-left">{{ props.item.PESEL }}</td>
+                <td class="text-xs-left">{{ props.item.sex }}</td>
+              </tr>
+            </template>
+            <template slot="expand" slot-scope="props">
+              <v-card flat>
+                <v-btn
+                  depressed
+                  large
+                  color="error"
+                  v-on:click="printCurrent(props.index, props.item.id)"
+                >
+                  Delete this patient.
+                </v-btn>
+              </v-card>
+            </template>
+          </v-data-table>
+          <v-btn fab dark color="indigo">
+            <v-icon dark v-on:click="showAddPatient = !showAddPatient">
+              add
+            </v-icon>
+          </v-btn>
+          <v-expand-transition>
+            <div v-if="showAddPatient">
+              <create-patient></create-patient>
+            </div>
+          </v-expand-transition>
+        </v-flex>
+      </v-layout>
     </v-card>
   </v-app>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import createPatient from '../components/CreatePatient'
-
-/**
- * Methods here allow the user to see patients that exist in the database using Vuetify's componenet called `v-data-table`. 
- * User can add a patient using an 'embeded' component called `createPatient`.
- */
 
 export default {
   name: 'HomePage',
-  components:{
+  components: {
     createPatient
   },
   data() {
@@ -79,25 +82,33 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getAllPatients']),
-    getPatients() {
-        this.getAllPatients()
+    increaseIndex(index) {
+      return index + 1
     },
-    printCurrent(id,second){
-      console.log(`W tabeli: ${id}, w SQL: ${second}`)
+    toggle() {
+      this.$props.expanded = !this.$props.expanded
     }
   },
-  created: 
-    function () {
-        this.getPatients()
-        this.$store.subscribe((mutation) => {
-        if (mutation.type === 'setPatients') {
-            const patients = this.$store.getters.getPatients
-            this.$data.patientArray = patients
-            this.$data.showTable = true
-        }
-      })
+  mounted() {
+    console.log(`xDDDD`)
+    this.$store.dispatch('getAllPatients')
+  },
+  created() {
+    let self = this
+    console.log(`xD!`)
+    this.$store.subscribe(mutation => {
+      if (mutation.type === 'setPatients') {
+        const patients = self.getPatientsFromStore
+        console.log(self.getPatientsFromStore)
+        self.patientArray = patients
+        self.showTable = true
+      }
+    })
+  },
+  computed: {
+    getPatientsFromStore() {
+      return this.$store.getters.getPatients
     }
-  
+  }
 }
 </script>
