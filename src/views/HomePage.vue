@@ -22,12 +22,13 @@
               </tr>
             </template>
             <template slot="expand" slot-scope="props">
+              <create-ilness />
               <v-card flat>
                 <v-btn
                   depressed
                   large
                   color="error"
-                  v-on:click="printCurrent(props.index, props.item.id)"
+                  v-on:click="destoryPatientByID(props.item.id)"
                 >
                   Delete this patient.
                 </v-btn>
@@ -41,7 +42,7 @@
           </v-btn>
           <v-expand-transition>
             <div v-if="showAddPatient">
-              <create-patient></create-patient>
+              <create-patient />
             </div>
           </v-expand-transition>
         </v-flex>
@@ -52,11 +53,14 @@
 
 <script>
 import createPatient from '../components/CreatePatient'
+import createIlness from '../components/CreateIlness'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'HomePage',
   components: {
-    createPatient
+    createPatient,
+    createIlness
   },
   data() {
     return {
@@ -87,19 +91,20 @@ export default {
     },
     toggle() {
       this.$props.expanded = !this.$props.expanded
+    },
+    ...mapActions(['removePatient']),
+    destoryPatientByID(id) {
+      this.removePatient(id)
     }
   },
   mounted() {
-    console.log(`xDDDD`)
     this.$store.dispatch('getAllPatients')
   },
   created() {
     let self = this
-    console.log(`xD!`)
     this.$store.subscribe(mutation => {
       if (mutation.type === 'setPatients') {
         const patients = self.getPatientsFromStore
-        console.log(self.getPatientsFromStore)
         self.patientArray = patients
         self.showTable = true
       }

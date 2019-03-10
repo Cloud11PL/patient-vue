@@ -65,9 +65,9 @@
           <v-date-picker v-model="date" scrollable>
             <v-spacer></v-spacer>
             <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
-            <v-btn flat color="primary" @click="$refs.dialog.save(date)"
-              >OK</v-btn
-            >
+            <v-btn flat color="primary" @click="$refs.dialog.save(date)">
+              OK
+            </v-btn>
           </v-date-picker>
         </v-dialog>
       </v-flex>
@@ -101,7 +101,6 @@ export default {
     ...mapActions(['addPatient']),
     submitForm() {
       this.$validator.validateAll().then(() => {
-        console.log(this.errors.any())
         if (!this.errors.any()) {
           const patient = JSON.stringify({
             firstname: this.firstname,
@@ -111,7 +110,7 @@ export default {
             PESEL: this.pesel
           })
           console.log(patient)
-          this.addPatient(patient).then(res => console.log(`hehe ${res}`))
+          this.addPatient(patient).then(res => console.log(res))
           this.firstname = ''
           this.surname = ''
           this.pesel = ''

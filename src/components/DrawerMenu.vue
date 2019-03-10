@@ -56,11 +56,11 @@
     <v-toolbar fixed app dark :clipped-left="clipped">
       <v-toolbar-side-icon @click.stop="toggleDrawer"></v-toolbar-side-icon>
       <v-toolbar-title>Patient Database</v-toolbar-title>
-      <v-spacer></v-spacer>
+      <v-spacer />
     </v-toolbar>
     <v-content>
       <v-container fluid>
-        <router-view></router-view>
+        <router-view />
       </v-container>
     </v-content>
   </v-app>

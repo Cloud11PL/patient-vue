@@ -25,7 +25,6 @@ export default new Vuex.Store({
     setAccessToken(state, accessToken) {
       Vue.set(state, 'accessToken', accessToken)
       Vue.set(state, 'auth', true)
-      localStorage.setItem('user-token', accessToken)
       router.push('/')
     },
     setLocalToken(state, token) {
@@ -45,13 +44,11 @@ export default new Vuex.Store({
     removeAccessToken(state) {
       Vue.set(state, 'accessToken', null)
       Vue.set(state, 'auth', false)
-      localStorage.removeItem('user-token')
       Vue.set(state, 'patients', {})
       router.push('/login')
     },
     authFail(state, err) {
       Vue.set(state, 'accessToken', null)
-      localStorage.removeItem('user-token')
       Vue.set(state, 'auth', false)
       err.response.status === 401 ? router.push('/login') : router.push('/')
     }
@@ -59,6 +56,7 @@ export default new Vuex.Store({
   actions: {
     login({ commit, dispatch }, data) {
       commit('removeAccessToken')
+      localStorage.removeItem('user-token')
       axios
         .post('/api/auth/signin', data)
         .then(response => {
@@ -101,15 +99,18 @@ export default new Vuex.Store({
         })
         .catch(err => {
           commit('authFail', err)
+          localStorage.removeItem('user-token')
         })
     },
     logout({ commit, dispatch }) {
       commit('removeAccessToken', null)
+      localStorage.removeItem('user-token')
     },
     loginSuccessful({ commit, dispatch }, response) {
       console.log(response.data.accessToken)
       if (response.data.accessToken) {
         commit('setLoginError', null)
+        localStorage.setItem('user-token', response.data.accessToken)
         commit('setAccessToken', response.data.accessToken)
       } else {
         dispatch('loginFailed')
@@ -129,6 +130,20 @@ export default new Vuex.Store({
       }`
       await axios
         .post('/api/auth/patient', patient)
+        .then(() => {
+          dispatch('getAllPatients')
+        })
+        .catch(err => {
+          commit('authFail', err)
+        })
+    },
+    removePatient({ commit, dispatch }, id) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${
+        this.state.accessToken
+      }`
+      console.log(id)
+      axios
+        .delete(`/api/destroyByID/${id}`)
         .then(() => {
           dispatch('getAllPatients')
         })
