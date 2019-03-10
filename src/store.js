@@ -22,32 +22,27 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    setAccessToken(state, accessToken) {
+    SET_ACCESS_TOKEN(state, accessToken) {
       Vue.set(state, 'accessToken', accessToken)
       Vue.set(state, 'auth', true)
       router.push('/')
     },
-    setLocalToken(state, token) {
-      Vue.set(state, 'accessToken', token)
-      Vue.set(state, 'auth', true)
-      router.push('/')
-    },
-    setLoginError(state, error) {
+    SET_LOGIN_ERROR(state, error) {
       Vue.set(state, 'error', error)
     },
-    setSignupStatus(state, status) {
+    SET_SIGNUP_STATUS(state, status) {
       Vue.set(state, 'signupStatus', status)
     },
-    setPatients(state, patients) {
+    SET_PATIENTS(state, patients) {
       Vue.set(state, 'patients', patients.data.patients)
     },
-    removeAccessToken(state) {
+    REMOVE_ACCESS_TOKEN(state) {
       Vue.set(state, 'accessToken', null)
       Vue.set(state, 'auth', false)
       Vue.set(state, 'patients', {})
       router.push('/login')
     },
-    authFail(state, err) {
+    AUTH_FAIL(state, err) {
       Vue.set(state, 'accessToken', null)
       Vue.set(state, 'auth', false)
       err.response.status === 401 ? router.push('/login') : router.push('/')
@@ -55,7 +50,7 @@ export default new Vuex.Store({
   },
   actions: {
     login({ commit, dispatch }, data) {
-      commit('removeAccessToken')
+      commit('REMOVE_ACCESS_TOKEN')
       localStorage.removeItem('user-token')
       axios
         .post('/api/auth/signin', data)
@@ -70,7 +65,7 @@ export default new Vuex.Store({
       axios
         .post('/api/auth/signup', data)
         .then(res => {
-          commit('setSignupStatus', 'success')
+          commit('SET_SIGNUP_STATUS', 'success')
           router.push('/login')
         })
         .catch(err => {
@@ -80,7 +75,7 @@ export default new Vuex.Store({
     useLocalStoragetoken({ commit, dispatch }, data) {
       const token = localStorage.getItem('user-token')
       if (token) {
-        commit('setLocalToken', token)
+        commit('SET_ACCESS_TOKEN', token)
       } else {
         dispatch('loginFailed')
       }
@@ -95,33 +90,33 @@ export default new Vuex.Store({
       axios
         .get('/api/getAll')
         .then(res => {
-          commit('setPatients', res)
+          commit('SET_PATIENTS', res)
         })
         .catch(err => {
-          commit('authFail', err)
+          commit('AUTH_FAIL', err)
           localStorage.removeItem('user-token')
         })
     },
     logout({ commit, dispatch }) {
-      commit('removeAccessToken', null)
+      commit('REMOVE_ACCESS_TOKEN', null)
       localStorage.removeItem('user-token')
     },
     loginSuccessful({ commit, dispatch }, response) {
       console.log(response.data.accessToken)
       if (response.data.accessToken) {
-        commit('setLoginError', null)
+        commit('SET_LOGIN_ERROR', null)
         localStorage.setItem('user-token', response.data.accessToken)
-        commit('setAccessToken', response.data.accessToken)
+        commit('SET_ACCESS_TOKEN', response.data.accessToken)
       } else {
         dispatch('loginFailed')
       }
     },
     loginFailed({ commit }) {
-      commit('setLoginError', 'Login Failed! :c')
+      commit('SET_LOGIN_ERROR', 'Login Failed! :c')
       router.push('/login')
     },
     signupFail({ commit, dispatch }, response) {
-      commit('setSignupStatus', 'fails')
+      commit('SET_SIGNUP_STATUS', 'fails')
       router.push('/register')
     },
     async addPatient({ commit, dispatch }, patient) {
@@ -134,7 +129,7 @@ export default new Vuex.Store({
           dispatch('getAllPatients')
         })
         .catch(err => {
-          commit('authFail', err)
+          commit('AUTH_FAIL', err)
         })
     },
     removePatient({ commit, dispatch }, id) {
@@ -148,7 +143,7 @@ export default new Vuex.Store({
           dispatch('getAllPatients')
         })
         .catch(err => {
-          commit('authFail', err)
+          commit('AUTH_FAIL', err)
         })
     }
   }
