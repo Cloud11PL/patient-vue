@@ -1,12 +1,6 @@
 <template>
   <div>
     <v-app>
-      <v-alert v-model="alertLoginSuccess" dismissible type="success">
-        Login has been succesfull.
-      </v-alert>
-      <v-alert v-model="alertLoginFail" dismissible type="error">
-        Login has NOT been succesfull.
-      </v-alert>
       <br />
       <h1>Login Page</h1>
       <br />
@@ -19,15 +13,22 @@
                 ><v-text-field
                   label="Username"
                   v-model="username"
-                ></v-text-field
-              ></v-flex>
+                  v-validate="'required'"
+                  name="username"
+                  type="text"
+                ></v-text-field>
+                <span>{{ errors.first('username') }}</span></v-flex
+              >
               <v-flex xs6 sm4 md4 offset-md4 offset-xs3
                 ><v-text-field
                   label="Password"
                   v-model="password"
                   type="password"
-                ></v-text-field
-              ></v-flex>
+                  v-validate="'required'"
+                  name="password"
+                ></v-text-field>
+                <span>{{ errors.first('password') }}</span></v-flex
+              >
               <v-btn type="submit">Log in</v-btn>
             </form>
             <br />
@@ -55,7 +56,14 @@ export default {
   methods: {
     ...mapActions(['login']),
     submit() {
-      this.login({ username: this.username, password: this.password })
+      this.$validator.validateAll().then(() => {
+        if (!this.errors.any()) {
+          this.login({
+            username: this.username,
+            password: this.password
+          })
+        }
+      })
     },
     pushRegister() {
       this.$router.push('/register')
