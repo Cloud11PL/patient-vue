@@ -109,9 +109,7 @@ export default {
             sex: this.sexChosen,
             PESEL: this.pesel
           })
-          console.log(patient)
           this.addPatient(patient).then(res => {
-            console.log(res)
             this.firstname = ''
             this.surname = ''
             this.pesel = ''
