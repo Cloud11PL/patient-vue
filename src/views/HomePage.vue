@@ -22,7 +22,6 @@
               </tr>
             </template>
             <template slot="expand" slot-scope="props">
-              <create-ilness />
               <v-card flat>
                 <v-btn
                   depressed
@@ -53,14 +52,12 @@
 
 <script>
 import createPatient from '../components/CreatePatient'
-import createIlness from '../components/CreateIlness'
 import { mapActions } from 'vuex'
 
 export default {
   name: 'HomePage',
   components: {
-    createPatient,
-    createIlness
+    createPatient
   },
   data() {
     return {
@@ -103,7 +100,7 @@ export default {
   created() {
     let self = this
     this.$store.subscribe(mutation => {
-      if (mutation.type === 'setPatients') {
+      if (mutation.type === 'SET_PATIENTS') {
         const patients = self.getPatientsFromStore
         self.patientArray = patients
         self.showTable = true
