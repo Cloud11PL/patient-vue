@@ -64,7 +64,7 @@ export default new Vuex.Store({
     signup({ commit, dispatch }, data) {
       axios
         .post('/api/auth/signup', data)
-        .then(res => {
+        .then(() => {
           commit('SET_SIGNUP_STATUS', 'success')
           router.push('/login')
         })
@@ -72,7 +72,7 @@ export default new Vuex.Store({
           dispatch('signupFail', err)
         })
     },
-    useLocalStoragetoken({ commit, dispatch }, data) {
+    useLocalStoragetoken({ commit, dispatch }) {
       const token = localStorage.getItem('user-token')
       if (token) {
         commit('SET_ACCESS_TOKEN', token)
@@ -80,7 +80,7 @@ export default new Vuex.Store({
         dispatch('loginFailed')
       }
     },
-    getAllPatients({ commit, dispatch }, data) {
+    getAllPatients({ commit, dispatch }) {
       if (!this.state.accessToken) {
         dispatch('useLocalStoragetoken')
       }
@@ -97,7 +97,7 @@ export default new Vuex.Store({
           localStorage.removeItem('user-token')
         })
     },
-    logout({ commit, dispatch }) {
+    logout({ commit }) {
       commit('REMOVE_ACCESS_TOKEN', null)
       localStorage.removeItem('user-token')
     },
@@ -115,7 +115,7 @@ export default new Vuex.Store({
       commit('SET_LOGIN_ERROR', 'Login Failed! :c')
       router.push('/login')
     },
-    signupFail({ commit, dispatch }, response) {
+    signupFail({ commit }) {
       commit('SET_SIGNUP_STATUS', 'fails')
       router.push('/register')
     },

@@ -8,7 +8,6 @@ import './registerServiceWorker'
 import VeeValidate from 'vee-validate'
 
 Vue.config.productionTip = false
-
 Vue.component('create-patient', CreatePatient)
 Vue.use(VeeValidate)
 

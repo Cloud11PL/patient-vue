@@ -27,7 +27,7 @@
                   depressed
                   large
                   color="error"
-                  v-on:click="destoryPatientByID(props.item.id)"
+                  v-on:click="destroyPatientByID(props.item.id)"
                 >
                   Delete this patient.
                 </v-btn>
@@ -82,6 +82,20 @@ export default {
       ]
     }
   },
+  computed: {
+    getPatientsFromStore() {
+      return this.$store.getters.getPatients
+    }
+  },
+  created() {
+    const self = this
+    this.$store.subscribe(mutation => {
+      if (mutation.type === 'SET_PATIENTS') {
+        self.patientArray = self.getPatientsFromStore
+        self.showTable = true
+      }
+    })
+  },
   methods: {
     increaseIndex(index) {
       return index + 1
@@ -90,27 +104,12 @@ export default {
       this.$props.expanded = !this.$props.expanded
     },
     ...mapActions(['removePatient']),
-    destoryPatientByID(id) {
+    destroyPatientByID(id) {
       this.removePatient(id)
     }
   },
   mounted() {
     this.$store.dispatch('getAllPatients')
-  },
-  created() {
-    let self = this
-    this.$store.subscribe(mutation => {
-      if (mutation.type === 'SET_PATIENTS') {
-        const patients = self.getPatientsFromStore
-        self.patientArray = patients
-        self.showTable = true
-      }
-    })
-  },
-  computed: {
-    getPatientsFromStore() {
-      return this.$store.getters.getPatients
-    }
   }
 }
 </script>
