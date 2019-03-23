@@ -84,7 +84,7 @@ export default {
   },
   computed: {
     getPatientsFromStore() {
-      return this.$store.getters.getPatients
+      return this.$store.getters.patients
     }
   },
   created() {
