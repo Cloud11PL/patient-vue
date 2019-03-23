@@ -17,7 +17,7 @@ export default new Vuex.Store({
     auth: state => {
       return state.auth
     },
-    getPatients: state => {
+    patients: state => {
       return state.patients
     }
   },
@@ -102,7 +102,6 @@ export default new Vuex.Store({
       localStorage.removeItem('user-token')
     },
     loginSuccessful({ commit, dispatch }, response) {
-      console.log(response.data.accessToken)
       if (response.data.accessToken) {
         commit('SET_LOGIN_ERROR', null)
         localStorage.setItem('user-token', response.data.accessToken)
@@ -136,7 +135,6 @@ export default new Vuex.Store({
       axios.defaults.headers.common['Authorization'] = `Bearer ${
         this.state.accessToken
       }`
-      console.log(id)
       axios
         .delete(`/api/destroyByID/${id}`)
         .then(() => {
