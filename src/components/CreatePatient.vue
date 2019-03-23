@@ -1,5 +1,5 @@
 <template>
-  <div id="CreatePatient">
+  <div>
     <form @submit.prevent="submit">
       <v-flex flex xs6 sm8 offset-xs3 offset-sm2>
         <v-text-field
@@ -71,11 +71,10 @@
           </v-date-picker>
         </v-dialog>
       </v-flex>
-      <v-btn v-on:click="submitForm" color="success" class="btn btn-primary"
+      <v-btn @:click="submitForm" color="success" class="btn btn-primary"
         >add</v-btn
       >
     </form>
-    <br />
   </div>
 </template>
 
@@ -109,14 +108,15 @@ export default {
             sex: this.sexChosen,
             PESEL: this.pesel
           })
-          this.addPatient(patient).then(res => {
-            this.firstname = ''
-            this.surname = ''
-            this.pesel = ''
-            this.$nextTick(() => this.$validator.reset())
-          })
+          this.addPatient(patient).then(() => this.resetFrom()) // dodać errory
         }
       })
+    },
+    resetFrom() {
+      this.firstname = ''
+      this.surname = ''
+      this.pesel = ''
+      this.$nextTick(() => this.$validator.reset())
     }
   }
 }
