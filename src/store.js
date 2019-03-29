@@ -52,24 +52,26 @@ export default new Vuex.Store({
     login({ commit, dispatch }, data) {
       commit('REMOVE_ACCESS_TOKEN')
       localStorage.removeItem('user-token')
-      axios
+      return axios
         .post('/api/auth/signin', data)
         .then(response => {
           dispatch('loginSuccessful', response)
         })
-        .catch(response => {
+        .catch(err => {
           dispatch('loginFailed')
+          return err.response
         })
     },
     signup({ commit, dispatch }, data) {
-      axios
+      return axios
         .post('/api/auth/signup', data)
-        .then(() => {
+        .then(res => {
           commit('SET_SIGNUP_STATUS', 'success')
-          router.push('/login')
+          return res
         })
         .catch(err => {
           dispatch('signupFail', err)
+          return err
         })
     },
     useLocalStoragetoken({ commit, dispatch }) {
@@ -112,6 +114,7 @@ export default new Vuex.Store({
     },
     loginFailed({ commit }) {
       commit('SET_LOGIN_ERROR', 'Login Failed! :c')
+      console.log('umar')
       router.push('/login')
     },
     signupFail({ commit }) {

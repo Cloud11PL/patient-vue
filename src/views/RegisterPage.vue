@@ -52,6 +52,9 @@
           </form>
           <br />
         </v-card>
+        <div class="modal_box" v-if="signupFailed">
+          <p class="modal">Error: There was an error!</p>
+        </div>
       </v-flex>
     </v-layout>
   </div>
@@ -67,8 +70,7 @@ export default {
       username: '',
       email: '',
       password: '',
-      alertSignupSuccess: false,
-      alertSignupFail: false
+      signupFailed: false
     }
   },
   methods: {
@@ -76,18 +78,60 @@ export default {
     submit() {
       this.$validator.validateAll().then(() => {
         if (!this.errors.any()) {
-          const doctor = JSON.stringify({
-            name: this.name,
-            username: this.username,
-            email: this.email,
-            password: this.password
-          })
-          this.signup(doctor).then(res => {
-            this.$nextTick(() => this.$validator.reset())
-          })
+          this.signup(this.parseData())
+            .then(res => {
+              if (res.status !== 200) {
+                this.signupFailed = true
+              } else {
+                this.$router.push({ name: 'login' })
+              }
+            })
+            .finally(this.$nextTick(() => this.$validator.reset()))
         }
+      })
+    },
+    parseData() {
+      return JSON.stringify({
+        name: this.name,
+        username: this.username,
+        email: this.email,
+        password: this.password
       })
     }
   }
 }
 </script>
+
+<style>
+.modal {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin-top: 15px;
+  color: #fff;
+  margin-top: 0;
+  padding: 15px 70px 15px 70px;
+  background-image: linear-gradient(to bottom right, #ea3640, red);
+  display: inline-block;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  animation-name: modal_animation;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes modal_animation {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.modal_box {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+</style>
