@@ -17,38 +17,26 @@
           </v-list-tile-action>
         </v-list-tile>
       </v-list>
-      <v-list class="pt-0" dense>
-        <v-divider light></v-divider>
-        <v-list-tile :to="{ name: 'login' }" v-if="hide">
-          <v-list-tile-action>
-            <v-icon>vpn_key</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Log In</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile :to="{ name: 'home' }" v-else>
-          <v-list-tile-action>
-            <v-icon>dashboard</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Home</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile :to="{ name: 'register' }" v-if="hide">
-          <v-list-tile-action>
-            <v-icon>person_add</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Sign Up</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile @click="logoutClick" v-else>
+      <v-list>
+        <div v-for="tile in buttonList" :key="tile.name">
+          <v-list-tile
+            :to="{ name: tile.directoryName }"
+            v-if="tile.show === hide"
+          >
+            <v-list-tile-action>
+              <v-icon>{{ tile.icon }}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              {{ tile.name }}
+            </v-list-tile-content>
+          </v-list-tile>
+        </div>
+        <v-list-tile v-if="isAuth" @click="logoutClick">
           <v-list-tile-action>
             <v-icon>clear</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>Log Out</v-list-tile-title>
+            Log Out
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -74,10 +62,25 @@ export default {
     return {
       drawer: false,
       clipped: true,
-      items: [
-        { title: 'Home', icon: 'dashboard', action: 'to="/"' },
-        { title: 'Log In', icon: 'vpn_key', action: 'to="/login"' },
-        { title: 'Sign Up', icon: 'person_add', action: 'to="/register"' }
+      buttonList: [
+        {
+          name: 'Home',
+          directoryName: 'dashboard',
+          icon: 'dashboard',
+          show: false
+        },
+        {
+          name: 'Log In',
+          directoryName: 'login',
+          icon: 'vpn_key',
+          show: true
+        },
+        {
+          name: 'Register',
+          directoryName: 'register',
+          icon: 'person_add',
+          show: true
+        }
       ],
       mini: false,
       right: null
@@ -95,6 +98,9 @@ export default {
   computed: {
     hide() {
       return this.$route.path === '/login' || this.$route.path === '/register'
+    },
+    isAuth() {
+      return this.$store.state.auth
     }
   }
 }
