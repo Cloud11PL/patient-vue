@@ -1,80 +1,97 @@
 <template>
-  <div>
-    <form @submit.prevent="submit">
-      <v-flex flex xs6 sm8 offset-xs3 offset-sm2>
-        <v-text-field
-          label="First Name"
+  <div class="frosted-box" id="create-patient-box">
+    <p class="page-name">Create Patient</p>
+    <form @submit.prevent="submitForm" id="form-register">
+      <div class="input-tile">
+        <input
+          type="text"
+          placeholder="First Name"
           v-model="firstname"
-          v-validate="'required|alpha'"
+          label="firstname"
+          v-validate="'required'"
           name="firstname"
+          autocomplete="off"
+        />
+      </div>
+      <span>{{ errors.first('firstname') }}</span>
+      <div class="input-tile">
+        <input
           type="text"
-        ></v-text-field>
-        <span>{{ errors.first('firstname') }}</span>
-      </v-flex>
-      <v-flex flex xs6 sm8 offset-xs3 offset-sm2>
-        <v-text-field
-          label="Surname"
+          placeholder="Surname"
           v-model="surname"
-          v-validate="'required|alpha'"
+          label="Surname"
+          v-validate="'required'"
           name="surname"
+          autocomplete="off"
+        />
+      </div>
+      <span>{{ errors.first('surname') }}</span>
+      <div class="input-tile">
+        <select
           type="text"
-        ></v-text-field>
-        <span>{{ errors.first('surname') }}</span>
-      </v-flex>
-      <v-flex flex xs6 sm8 offset-xs3 offset-sm2>
-        <v-select
-          :items="sex"
-          label="Choose sex"
           v-model="sexChosen"
+          label="Sex"
           v-validate="'required'"
-          name="sexChosen"
-          type="text"
-        ></v-select>
-        <span>{{ errors.first('sexChosen') }}</span>
-      </v-flex>
-      <v-flex flex xs6 sm8 offset-xs3 offset-sm2>
-        <v-text-field
-          label="PESEL ID"
-          v-model="pesel"
-          v-validate="'required|digits:11'"
-          name="pesel"
-          type="number"
-        ></v-text-field>
-        <span>{{ errors.first('pesel') }}</span>
-      </v-flex>
-      <v-flex flex xs6 sm8 offset-xs3 offset-sm2>
-        <v-dialog
-          ref="dialog"
-          v-model="modal"
-          :return-value.sync="date"
-          persistent
-          lazy
-          full-width
-          width="290px"
-          v-validate="'required'"
-          name="date"
-          type="text"
+          name="sex"
         >
-          <v-text-field
-            slot="activator"
-            v-model="date"
-            label="Picker in dialog"
-            prepend-icon="event"
-            readonly
-          ></v-text-field>
-          <v-date-picker v-model="date" scrollable>
-            <v-spacer></v-spacer>
-            <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
-            <v-btn flat color="primary" @click="$refs.dialog.save(date)">
-              OK
-            </v-btn>
-          </v-date-picker>
-        </v-dialog>
-      </v-flex>
-      <v-btn @:click="submitForm" color="success" class="btn btn-primary"
-        >add</v-btn
+          <option value="" disabled selected>Select gender...</option>
+          <option selected>Male</option>
+          <option>Female</option>
+        </select>
+      </div>
+      <span>{{ errors.first('sex') }}</span>
+      <div class="input-tile">
+        <input
+          type="text"
+          placeholder="PESEL ID"
+          v-model="pesel"
+          label="PESEL"
+          v-validate="'required|digits:11'"
+          name="PESEL"
+          autocomplete="off"
+        />
+      </div>
+      <span>{{ errors.first('PESEL') }}</span>
+      <v-dialog
+        ref="dialog"
+        v-model="modal"
+        :return-value.sync="date"
+        persistent
+        lazy
+        full-width
+        width="290px"
+        v-validate="'required'"
+        name="date"
+        type="text"
       >
+        <v-text-field
+          slot="activator"
+          v-model="date"
+          label="Picker in dialog"
+          prepend-icon="event"
+          readonly
+        ></v-text-field>
+        <v-date-picker v-model="date" scrollable>
+          <v-spacer></v-spacer>
+          <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+          <v-btn flat color="primary" @click="$refs.dialog.save(date)">
+            OK
+          </v-btn>
+        </v-date-picker>
+      </v-dialog>
+      <span>{{ errors.first('password') }}</span>
+      <button class="submit-button" type="submit" @:click="submitForm">
+        Submit
+      </button>
     </form>
+    <transition name="modal_box">
+      <div v-if="isError">
+        <p class="modal">Error: {{ errorMessage }}</p>
+      </div>
+      <div v-if="goodModal">
+        <p class="modal modal-good">Success!</p>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -87,13 +104,15 @@ export default {
     return {
       firstname: '',
       surname: '',
-      sex: ['Male', 'Female'],
       sexChosen: '',
       pesel: '',
       modal: false,
       date: new Date().toISOString().substr(0, 10),
       expand: false,
-      submitted: false
+      submitted: false,
+      isError: false,
+      errorMessage: '',
+      goodModal: false
     }
   },
   methods: {
@@ -101,15 +120,39 @@ export default {
     submitForm() {
       this.$validator.validateAll().then(() => {
         if (!this.errors.any()) {
-          const patient = JSON.stringify({
-            firstname: this.firstname,
-            surname: this.surname,
-            dateOfBirth: this.date,
-            sex: this.sexChosen,
-            PESEL: this.pesel
-          })
-          this.addPatient(patient).then(() => this.resetFrom()) // dodać errory
+          this.addPatient(this.parseData())
+            .then(() => {
+              this.resetFrom()
+              this.showGoodModal()
+            })
+            .catch(err => {
+              this.showBadModal()
+              this.errorMessage = err.data.reason
+            })
         }
+      })
+    },
+    showGoodModal() {
+      const self = this
+      this.goodModal = true
+      setTimeout(function() {
+        self.goodModal = false
+      }, 5000)
+    },
+    showBadModal() {
+      const self = this
+      this.isError = true
+      setTimeout(function() {
+        self.isError = false
+      }, 5000)
+    },
+    parseData() {
+      return JSON.stringify({
+        firstname: this.firstname,
+        surname: this.surname,
+        dateOfBirth: this.date,
+        sex: this.sexChosen,
+        PESEL: this.pesel
       })
     },
     resetFrom() {
@@ -121,3 +164,10 @@ export default {
   }
 }
 </script>
+
+<style>
+#create-patient-box {
+  padding: 10px 10px 10px 10px;
+  width: 100%;
+}
+</style>
