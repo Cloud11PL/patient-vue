@@ -1,53 +1,35 @@
 <template>
-  <v-app>
-    <v-card>
-      <v-layout row>
-        <v-flex xs12 sm6 offset-sm3>
-          <br />
-          <v-data-table
-            :headers="headers"
-            :items="patientArray"
-            :expand="expand"
-            item-key="surname"
-            v-show="showTable"
-          >
-            <template slot="items" slot-scope="props">
-              <tr @click="props.expanded = !props.expanded">
-                <td class="text-xs-left">{{ increaseIndex(props.index) }}</td>
-                <td class="text-xs-left">{{ props.item.surname }}</td>
-                <td class="text-xs-left">{{ props.item.firstname }}</td>
-                <td class="text-xs-left">{{ props.item.dateOfBirth }}</td>
-                <td class="text-xs-left">{{ props.item.PESEL }}</td>
-                <td class="text-xs-left">{{ props.item.sex }}</td>
-              </tr>
-            </template>
-            <template slot="expand" slot-scope="props">
-              <v-card flat>
-                <v-btn
-                  depressed
-                  large
-                  color="error"
-                  v-on:click="destroyPatientByID(props.item.id)"
-                >
-                  Delete this patient.
-                </v-btn>
-              </v-card>
-            </template>
-          </v-data-table>
-          <v-btn fab dark color="indigo">
-            <v-icon dark v-on:click="showAddPatient = !showAddPatient">
-              add
-            </v-icon>
-          </v-btn>
-          <v-expand-transition>
-            <div v-if="showAddPatient">
-              <create-patient />
-            </div>
-          </v-expand-transition>
-        </v-flex>
-      </v-layout>
-    </v-card>
-  </v-app>
+  <div class="something">
+    <div class="box">
+      <div
+        class="patient-box"
+        v-for="patient in getPatientsFromStore"
+        :key="patient.id"
+      >
+        <div class="image-box">
+          <img class="patient-image" src="../assets/user-white.png" />
+          <button class="delete-button">
+            <img
+              class="delete-button-image"
+              src="../assets/delete-button.png"
+              @click="destroyPatientByID(patient.id)"
+            />
+          </button>
+        </div>
+        <div class="text-data">
+          <p class="name">{{ patient.firstname }} {{ patient.surname }}</p>
+          <p class="other-patient-info">
+            Date of birth: {{ patient.dateOfBirth }}
+          </p>
+          <p class="other-patient-info">Gender: {{ patient.sex }}</p>
+          <p class="other-patient-info">Pesel: {{ patient.PESEL }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="create">
+      <createPatient />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -62,39 +44,16 @@ export default {
   data() {
     return {
       patients: {},
-      patientArray: [],
       expand: false,
       showTable: false,
       showAddPatient: false,
-      firstId: 0,
-      headers: [
-        {
-          text: 'ID',
-          align: 'left',
-          sortable: true,
-          value: 'id'
-        },
-        { text: 'Surname', value: 'surname', width: '10%' },
-        { text: 'Firstname', value: 'firstname' },
-        { text: 'Date of Birth', value: 'date' },
-        { text: 'PESEL ID', value: 'pesel' },
-        { text: 'Sex', value: 'sex' }
-      ]
+      firstId: 0
     }
   },
   computed: {
     getPatientsFromStore() {
-      return this.$store.getters.patients
+      return this.$store.state.patients ? this.$store.state.patients : []
     }
-  },
-  created() {
-    const self = this
-    this.$store.subscribe(mutation => {
-      if (mutation.type === 'SET_PATIENTS') {
-        self.patientArray = self.getPatientsFromStore
-        self.showTable = true
-      }
-    })
   },
   methods: {
     increaseIndex(index) {
@@ -105,7 +64,9 @@ export default {
     },
     ...mapActions(['removePatient']),
     destroyPatientByID(id) {
-      this.removePatient(id)
+      if (confirm('Do you want to delete this patient?')) {
+        this.removePatient(id)
+      }
     }
   },
   mounted() {
@@ -113,3 +74,8 @@ export default {
   }
 }
 </script>
+
+<style>
+@import url(../assets/styles/loginPage.css);
+@import url(../assets/styles/homePage.css);
+</style>
