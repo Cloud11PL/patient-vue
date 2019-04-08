@@ -1,62 +1,58 @@
 <template>
-  <div>
-    <br />
-    <h1>Register Page</h1>
-    <br />
-    <v-layout>
-      <v-flex xs10 sm6 offset-sm3 offset-xs1>
-        <v-card>
-          <br />
-          <form @submit.prevent="submit">
-            <v-flex xs6 sm4 md4 offset-md4 offset-xs3
-              ><v-text-field
-                label="Name"
-                v-model="name"
-                v-validate="'required'"
-                name="name"
-                type="text"
-              ></v-text-field>
-              <span>{{ errors.first('name') }}</span>
-            </v-flex>
-            <v-flex xs6 sm4 md4 offset-md4 offset-xs3
-              ><v-text-field
-                label="Username"
-                v-model="username"
-                v-validate="'required'"
-                name="username"
-              ></v-text-field>
-              <span>{{ errors.first('username') }}</span>
-            </v-flex>
-            <v-flex xs6 sm4 md4 offset-md4 offset-xs3
-              ><v-text-field
-                label="Email"
-                v-model="email"
-                v-validate="'required|email'"
-                name="email"
-                type="text"
-              ></v-text-field>
-              <span>{{ errors.first('email') }}</span>
-            </v-flex>
-            <v-flex xs6 sm4 md4 offset-md4 offset-xs3
-              ><v-text-field
-                label="Password"
-                v-model="password"
-                type="password"
-                v-validate="'required'"
-                name="password"
-              ></v-text-field>
-              <span>{{ errors.first('password') }}</span>
-            </v-flex>
-            <v-btn type="submit">Sign Up</v-btn>
-            <br />
-          </form>
-          <br />
-        </v-card>
-        <div class="modal_box" v-if="signupFailed">
-          <p class="modal">Error: There was an error!</p>
-        </div>
-      </v-flex>
-    </v-layout>
+  <div class="frosted-box" id="box-register">
+    <p class="page-name">Register Page</p>
+    <form @submit.prevent="submit" id="form-register">
+      <div class="input-tile">
+        <input
+          type="text"
+          placeholder="Name"
+          v-model="name"
+          label="Name"
+          v-validate="'required'"
+          name="name"
+        />
+      </div>
+      <span>{{ errors.first('name') }}</span>
+      <div class="input-tile">
+        <input
+          type="text"
+          placeholder="Username"
+          v-model="username"
+          label="Username"
+          v-validate="'required'"
+          name="username"
+        />
+      </div>
+      <span>{{ errors.first('username') }}</span>
+      <div class="input-tile">
+        <input
+          type="text"
+          placeholder="E-mail"
+          v-model="email"
+          label="Email"
+          v-validate="'required|email'"
+          name="email"
+        />
+      </div>
+      <span>{{ errors.first('email') }}</span>
+      <div class="input-tile">
+        <input
+          type="password"
+          placeholder="Password"
+          v-model="password"
+          label="Password"
+          v-validate="'required'"
+          name="password"
+        />
+      </div>
+      <span>{{ errors.first('password') }}</span>
+      <button class="submit-button" type="submit">Submit</button>
+    </form>
+    <transition name="modal_box">
+      <div v-if="signupFailed">
+        <p class="modal">Error: {{ failedMessage }}</p>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -107,26 +103,36 @@ export default {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   margin-top: 15px;
   color: #fff;
-  margin-top: 0;
   padding: 15px 70px 15px 70px;
   background-image: linear-gradient(to bottom right, #ea3640, red);
   display: inline-block;
   border-radius: 15px;
   backdrop-filter: blur(10px);
   animation-name: modal_animation;
-  animation-duration: 1s;
+  animation-duration: 5s;
   animation-timing-function: ease-in-out;
+  opacity: 0;
+}
+
+.modal-good {
+  background-image: linear-gradient(to bottom right, #36ea3f, rgb(51, 255, 0));
 }
 
 @keyframes modal_animation {
   0% {
     opacity: 0;
   }
-  40% {
+  10% {
     opacity: 0.7;
   }
-  100% {
+  20% {
     opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 
