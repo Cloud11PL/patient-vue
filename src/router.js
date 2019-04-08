@@ -14,7 +14,16 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: HomePage
+      component: HomePage,
+      beforeEnter(to, from, next) {
+        store.dispatch('isAuth').then(res => {
+          if (res.status === 200) {
+            next()
+          } else {
+            router.push({ name: 'login' })
+          }
+        })
+      }
     },
     {
       path: '/login',
