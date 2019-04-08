@@ -1,57 +1,18 @@
 <template>
-  <v-app id="inspire">
-    <v-navigation-drawer
-      v-model="drawer"
-      :clipped="clipped"
-      enable-resize-watcher
-      dark
-      temporary
-      absolute
-    >
-      <v-list class="pa-1">
-        <v-list-tile>
-          <v-list-tile-action>
-            <v-btn icon @click.stop="toggleDrawer">
-              <v-icon>chevron_left</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
-      </v-list>
-      <v-list>
-        <div v-for="tile in buttonList" :key="tile.name">
-          <v-list-tile
-            :to="{ name: tile.directoryName }"
-            v-if="tile.show === hide"
-          >
-            <v-list-tile-action>
-              <v-icon>{{ tile.icon }}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              {{ tile.name }}
-            </v-list-tile-content>
-          </v-list-tile>
-        </div>
-        <v-list-tile v-if="isAuth" @click="logoutClick">
-          <v-list-tile-action>
-            <v-icon>clear</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            Log Out
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-toolbar fixed app dark :clipped-left="clipped">
-      <v-toolbar-side-icon @click.stop="toggleDrawer"></v-toolbar-side-icon>
-      <v-toolbar-title>Patient Database</v-toolbar-title>
-      <v-spacer />
-    </v-toolbar>
-    <v-content>
-      <v-container fluid>
-        <router-view />
-      </v-container>
-    </v-content>
-  </v-app>
+  <div>
+    <ul>
+      <li v-for="tile in buttonList" :key="tile.name">
+        <router-link
+          :to="{ name: tile.directoryName }"
+          v-if="tile.show === hide"
+          >{{ tile.name }}</router-link
+        >
+      </li>
+      <li v-if="isAuth">
+        <a @click="logoutClick">Log Out</a>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -65,7 +26,7 @@ export default {
       buttonList: [
         {
           name: 'Home',
-          directoryName: 'dashboard',
+          directoryName: 'home',
           icon: 'dashboard',
           show: false
         },
@@ -105,3 +66,36 @@ export default {
   }
 }
 </script>
+
+<style>
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: #111;
+}
+
+li a.router-link-active {
+  background-color: rgb(49, 25, 40);
+}
+</style>
